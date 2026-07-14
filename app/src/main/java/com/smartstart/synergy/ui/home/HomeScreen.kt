@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 private data class DashItem(val emoji: String, val label: String, val color: Color, val action: HomeAction)
 
-private enum class HomeAction { LEARN, GAMES, PROGRESS, ABOUT, SOON }
+private enum class HomeAction { LEARN, GAMES, PROGRESS, ABOUT, REWARDS, TEACHER, PARENT }
 
 @Composable
 fun HomeScreen(
@@ -39,6 +39,9 @@ fun HomeScreen(
     onGames: () -> Unit,
     onProgress: () -> Unit,
     onAbout: () -> Unit,
+    onRewards: () -> Unit,
+    onTeacherMode: () -> Unit,
+    onParentMode: () -> Unit,
 ) {
     val snackbarHostState = rememberSnackbar()
     val scope = rememberCoroutineScope()
@@ -48,9 +51,9 @@ fun HomeScreen(
         DashItem("🎮", "Games", SkyBlue, HomeAction.GAMES),
         DashItem("📊", "My Progress", Grass, HomeAction.PROGRESS),
         DashItem("👨‍💻", "About Developer", Teal, HomeAction.ABOUT),
-        DashItem("🏆", "Rewards", Amber, HomeAction.SOON),
-        DashItem("👨‍🏫", "Teacher Mode", Teal, HomeAction.SOON),
-        DashItem("👨‍👩‍👧", "Parent Mode", Pink, HomeAction.SOON),
+        DashItem("🏆", "Rewards", Amber, HomeAction.REWARDS),
+        DashItem("👨‍🏫", "Teacher Mode", Teal, HomeAction.TEACHER),
+        DashItem("👨‍👩‍👧", "Parent Mode", Pink, HomeAction.PARENT),
     )
 
     Scaffold(
@@ -78,16 +81,16 @@ fun HomeScreen(
                         emoji = item.emoji,
                         label = item.label,
                         color = item.color,
-                        subtitle = if (item.action == HomeAction.SOON) "Coming soon" else null,
+                        subtitle = null,
                     ) {
                         when (item.action) {
                             HomeAction.LEARN -> onLearn()
                             HomeAction.GAMES -> onGames()
                             HomeAction.PROGRESS -> onProgress()
                             HomeAction.ABOUT -> onAbout()
-                            HomeAction.SOON -> scope.launch {
-                                snackbarHostState.showSnackbar("${item.label} is coming in a future update!")
-                            }
+                            HomeAction.REWARDS -> onRewards()
+                            HomeAction.TEACHER -> onTeacherMode()
+                            HomeAction.PARENT -> onParentMode()
                         }
                     }
                 }
