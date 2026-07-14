@@ -11,6 +11,7 @@ import com.smartstart.synergy.ui.games.AnimalQuizGame
 import com.smartstart.synergy.ui.games.BalloonPopGame
 import com.smartstart.synergy.ui.games.GamesMenuScreen
 import com.smartstart.synergy.ui.games.ShapeMatchGame
+import com.smartstart.synergy.ui.games.MemoryGame
 import com.smartstart.synergy.ui.home.HomeScreen
 import com.smartstart.synergy.ui.about.AboutScreen
 import com.smartstart.synergy.ui.learn.AlphabetScreen
@@ -84,6 +85,7 @@ fun SmartStartNavGraph(
                         GameIds.BALLOON_POP -> navController.navigate(Routes.GAME_BALLOON)
                         GameIds.SHAPE_MATCH -> navController.navigate(Routes.GAME_SHAPE_MATCH)
                         GameIds.ANIMAL_QUIZ -> navController.navigate(Routes.GAME_ANIMAL_QUIZ)
+                        GameIds.MEMORY -> navController.navigate(Routes.GAME_MEMORY)
                     }
                 },
             )
@@ -96,6 +98,9 @@ fun SmartStartNavGraph(
         }
         composable(Routes.GAME_ANIMAL_QUIZ) {
             AnimalQuizGame(progressViewModel) { navController.popBackStack() }
+        }
+        composable(Routes.GAME_MEMORY) {
+            MemoryGame(progressViewModel) { navController.popBackStack() }
         }
         composable(Routes.PROGRESS) {
             ProgressScreen(progressViewModel) { navController.popBackStack() }

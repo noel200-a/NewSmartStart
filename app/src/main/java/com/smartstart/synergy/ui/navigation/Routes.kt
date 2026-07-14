@@ -18,4 +18,5 @@ object Routes {
     const val GAME_BALLOON = "game/balloon"
     const val GAME_SHAPE_MATCH = "game/shape_match"
     const val GAME_ANIMAL_QUIZ = "game/animal_quiz"
+    const val GAME_MEMORY = "game/memory"
 }
