@@ -8,6 +8,9 @@ object Routes {
     const val GAMES = "games"
     const val PROGRESS = "progress"
     const val ABOUT = "about"
+    const val REWARDS = "rewards"
+    const val TEACHER_MODE = "teacher_mode"
+    const val PARENT_MODE = "parent_mode"
 
     const val MODULE = "module/{moduleId}"
     fun module(moduleId: String) = "module/$moduleId"
