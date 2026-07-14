@@ -22,6 +22,9 @@ import com.smartstart.synergy.ui.learn.ShapesScreen
 import com.smartstart.synergy.ui.progress.ProgressScreen
 import com.smartstart.synergy.ui.splash.SplashScreen
 import com.smartstart.synergy.ui.welcome.WelcomeScreen
+import com.smartstart.synergy.ui.rewards.RewardsScreen
+import com.smartstart.synergy.ui.teacher.TeacherModeScreen
+import com.smartstart.synergy.ui.parent.ParentModeScreen
 import com.smartstart.synergy.viewmodel.ProgressViewModel
 
 @Composable
@@ -50,6 +53,9 @@ fun SmartStartNavGraph(
                 onGames = { navController.navigate(Routes.GAMES) },
                 onProgress = { navController.navigate(Routes.PROGRESS) },
                 onAbout = { navController.navigate(Routes.ABOUT) },
+                onRewards = { navController.navigate(Routes.REWARDS) },
+                onTeacherMode = { navController.navigate(Routes.TEACHER_MODE) },
+                onParentMode = { navController.navigate(Routes.PARENT_MODE) },
             )
         }
         composable(Routes.LEARN) {
@@ -96,6 +102,15 @@ fun SmartStartNavGraph(
         }
         composable(Routes.ABOUT) {
             AboutScreen { navController.popBackStack() }
+        }
+        composable(Routes.REWARDS) {
+            RewardsScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.TEACHER_MODE) {
+            TeacherModeScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.PARENT_MODE) {
+            ParentModeScreen(onBack = { navController.popBackStack() })
         }
     }
 }
