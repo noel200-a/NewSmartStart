@@ -1,6 +1,5 @@
 package com.smartstart.synergy.ui.teacher
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +16,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,6 +37,8 @@ import com.smartstart.synergy.ui.theme.Teal
 
 data class ClassStats(val label: String, val value: String, val detail: String, val color: Color)
 
+data class StudentProgress(val name: String, val modulesCompleted: Int, val totalStars: Int, val lastActive: String)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeacherModeScreen(onBack: () -> Unit) {
@@ -46,6 +48,14 @@ fun TeacherModeScreen(onBack: () -> Unit) {
         ClassStats("Most Popular", "Alphabet", "Module this week", Grass),
         ClassStats("Top Performer", "Emma", "3★ in all modules", Pink),
         ClassStats("Engagement", "92%", "Students active today", Teal),
+    )
+
+    val students = listOf(
+        StudentProgress("Emma", 5, 15, "Today"),
+        StudentProgress("Liam", 4, 11, "Yesterday"),
+        StudentProgress("Olivia", 3, 9, "2 days ago"),
+        StudentProgress("Noah", 5, 14, "Today"),
+        StudentProgress("Ava", 2, 6, "3 days ago"),
     )
 
     Scaffold(
@@ -86,24 +96,47 @@ fun TeacherModeScreen(onBack: () -> Unit) {
                 items(stats) { stat ->
                     StatCard(stat)
                 }
+
                 item {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            "📌 Features Coming Soon:",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding(bottom = 8.dp),
-                        )
-                        Text(
-                            "• Individual student progress tracking\n" +
-                                "• Module performance analytics\n" +
-                                "• Attendance records\n" +
-                                "• Custom assignments & quizzes\n" +
-                                "• Export reports to PDF",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                        )
+                    Text(
+                        "Student Progress",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
+                    )
+                }
+
+                items(students) { student ->
+                    StudentCard(student)
+                }
+
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        colors = CardDefaults.cardColors(containerColor = SkyBlue.copy(alpha = 0.1f)),
+                        shape = RoundedCornerShape(12.dp),
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                "📌 Features Coming Soon:",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier.padding(bottom = 8.dp),
+                            )
+                            Text(
+                                "• Individual student progress tracking\n" +
+                                    "• Module performance analytics\n" +
+                                    "• Attendance records\n" +
+                                    "• Custom assignments & quizzes\n" +
+                                    "• Export reports to PDF",
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                            )
+                        }
                     }
                 }
             }
@@ -114,10 +147,8 @@ fun TeacherModeScreen(onBack: () -> Unit) {
 @Composable
 private fun StatCard(stat: ClassStats) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(stat.color, shape = RoundedCornerShape(12.dp)),
-        colors = CardDefaults.cardColors(containerColor = stat.color),
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = stat.color.copy(alpha = 0.2f)),
         shape = RoundedCornerShape(12.dp),
     ) {
         Row(
@@ -132,20 +163,72 @@ private fun StatCard(stat: ClassStats) {
                     stat.label,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White.copy(alpha = 0.9f),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 )
                 Text(
                     stat.value,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = stat.color,
                 )
                 Text(
                     stat.detail,
                     fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun StudentCard(student: StudentProgress) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        student.name,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Text(
+                        "Last active: ${student.lastActive}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    )
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        "⭐ ${student.totalStars}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Grass,
+                    )
+                    Text(
+                        "${student.modulesCompleted}/5 modules",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    )
+                }
+            }
+            LinearProgressIndicator(
+                progress = { student.modulesCompleted.toFloat() / 5f },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                color = Teal,
+                trackColor = Teal.copy(alpha = 0.2f),
+            )
         }
     }
 }

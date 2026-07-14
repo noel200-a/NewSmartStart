@@ -1,6 +1,5 @@
 package com.smartstart.synergy.ui.rewards
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,18 +34,18 @@ import com.smartstart.synergy.ui.theme.Grass
 import com.smartstart.synergy.ui.theme.Pink
 import com.smartstart.synergy.ui.theme.SkyBlue
 
-data class RewardBadge(val emoji: String, val title: String, val description: String, val color: Color)
+data class RewardBadge(val emoji: String, val title: String, val description: String, val color: Color, val unlocked: Boolean = false, val progress: Float = 0f)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RewardsScreen(onBack: () -> Unit) {
     val badges = listOf(
-        RewardBadge("🌟", "First Step", "Complete your first learning module", SkyBlue),
-        RewardBadge("⭐", "Star Collector", "Earn 10 stars across all modules", Amber),
-        RewardBadge("🏆", "Champion", "Complete all 5 learning modules", Coral),
-        RewardBadge("🎮", "Game Master", "Play all games", Grass),
-        RewardBadge("🔥", "On Fire!", "Play 5 games in one day", Pink),
-        RewardBadge("🎯", "Perfect Score", "Score 100 points in a game", SkyBlue),
+        RewardBadge("🌟", "First Step", "Complete your first learning module", SkyBlue, unlocked = true),
+        RewardBadge("⭐", "Star Collector", "Earn 10 stars across all modules", Amber, unlocked = true, progress = 0.8f),
+        RewardBadge("🏆", "Champion", "Complete all 5 learning modules", Coral, unlocked = true),
+        RewardBadge("🎮", "Game Master", "Play all games", Grass, unlocked = true),
+        RewardBadge("🔥", "On Fire!", "Play 5 games in one day", Pink, unlocked = false, progress = 0.6f),
+        RewardBadge("🎯", "Perfect Score", "Score 100 points in a game", SkyBlue, unlocked = false, progress = 0.4f),
     )
 
     Scaffold(
@@ -74,9 +73,16 @@ fun RewardsScreen(onBack: () -> Unit) {
                 .padding(16.dp),
         ) {
             Text(
-                "Unlock badges and rewards by completing challenges!",
-                fontSize = 16.sp,
+                "🎉 Great Progress!",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+            Text(
+                "Unlock badges by completing challenges",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 modifier = Modifier.padding(bottom = 16.dp),
             )
 
@@ -94,10 +100,10 @@ fun RewardsScreen(onBack: () -> Unit) {
 @Composable
 private fun BadgeCard(badge: RewardBadge) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(badge.color, shape = RoundedCornerShape(12.dp)),
-        colors = CardDefaults.cardColors(containerColor = badge.color),
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = if (badge.unlocked) badge.color.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant
+        ),
         shape = RoundedCornerShape(12.dp),
     ) {
         Row(
@@ -111,19 +117,33 @@ private fun BadgeCard(badge: RewardBadge) {
                 badge.emoji,
                 fontSize = 40.sp,
                 modifier = Modifier.padding(end = 8.dp),
+                alpha = if (badge.unlocked) 1f else 0.5f,
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     badge.title,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    alpha = if (badge.unlocked) 1f else 0.6f,
                 )
                 Text(
                     badge.description,
-                    fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.85f),
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 )
+                if (!badge.unlocked && badge.progress > 0f) {
+                    Text(
+                        "Progress: ${(badge.progress * 100).toInt()}%",
+                        fontSize = 12.sp,
+                        color = badge.color,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
+            }
+            if (badge.unlocked) {
+                Text("✓", fontSize = 24.sp, color = Grass, fontWeight = FontWeight.Bold)
             }
         }
     }

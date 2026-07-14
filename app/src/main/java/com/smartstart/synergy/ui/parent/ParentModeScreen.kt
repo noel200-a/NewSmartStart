@@ -1,6 +1,5 @@
 package com.smartstart.synergy.ui.parent
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,6 +48,9 @@ fun ParentModeScreen(onBack: () -> Unit) {
         ChildProgress("Animals", 2, 6, 10, "🦁"),
     )
 
+    val totalStars = childProgress.sumOf { it.stars }
+    val avgCompletion = (childProgress.sumOf { it.completed.toFloat() / it.total } / childProgress.size * 100).toInt()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -87,20 +89,35 @@ fun ParentModeScreen(onBack: () -> Unit) {
                 modifier = Modifier.padding(bottom = 24.dp),
             )
 
-            Text(
-                "📚 Module Progress",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(bottom = 12.dp),
-            )
-
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        StatItem("⭐ $totalStars", "Stars Earned", modifier = Modifier.weight(1f))
+                        StatItem("$avgCompletion%", "Avg. Complete", modifier = Modifier.weight(1f))
+                    }
+                }
+
+                item {
+                    Text(
+                        "📚 Module Progress",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+                    )
+                }
+
                 items(childProgress) { progress ->
                     ProgressCard(progress)
                 }
+
                 item {
                     Card(
                         modifier = Modifier
@@ -128,6 +145,7 @@ fun ParentModeScreen(onBack: () -> Unit) {
                         }
                     }
                 }
+
                 item {
                     Card(
                         modifier = Modifier
@@ -156,6 +174,25 @@ fun ParentModeScreen(onBack: () -> Unit) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun StatItem(value: String, label: String, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Teal)
+            Text(label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
         }
     }
 }
